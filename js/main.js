@@ -165,8 +165,6 @@ createRestaurantHTML = (restaurant) => {
   image.alt = restaurant.name;
   li.append(image);
 
-  console.log(restaurant.name);
-
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
   li.append(name);
@@ -215,6 +213,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 
 
 // Register a service worker
+
 if('serviceWorker' in navigator){
 navigator.serviceWorker.register('/sw.js').then(function(){
   console.log('Registration worked!');
