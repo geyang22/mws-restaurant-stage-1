@@ -34,6 +34,7 @@ self.addEventListener("install", function(event) {
   );
 });
 
+// Delete old cache names
 self.addEventListener("activate", function(event) {
   event.waitUntil(
     caches
@@ -49,7 +50,7 @@ self.addEventListener("activate", function(event) {
   );
 });
 
-// Return the cached assets if there is a cache available
+// Return the cached assets if available
 self.addEventListener("fetch", function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
