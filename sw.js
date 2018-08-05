@@ -1,14 +1,12 @@
 const urlToCache = [
 	'/',
 	'/index.html',
-	'restaurant.html',
+	'/restaurant.html',
 	'/css/styles.css',
 	'/data/restaurants.json',
 	'/js/main.js',
 	'/js/restaurant_info.js',
 	'/js/dbhelper.js',
-	'https://fonts.googleapis.com/css?family=Montserrat:700',
-	'https://fonts.googleapis.com/css?family=Open+Sans',
 	'img/1.jpg',
 	'img/2.jpg',
 	'img/3.jpg',
@@ -18,33 +16,37 @@ const urlToCache = [
 	'img/7.jpg',
 	'img/8.jpg',
 	'img/9.jpg',
-	'img/10.jpg',
+	'img/10.jpg'
 ];
 
-const staticCacheName = 'r-reviews-v1';
+const staticCacheName = 'restaurant-cache-1';
 
-self.addEventListener('install', e => {
-	console.log('Attempting to install service worker and cache static assets');
-	e.waitUntil(
-		caches.open('staticCacheName')
-			.then(cache => {
-				return cache.addAll(filesToCache);
-			}).catch(error => {
-				console.log('Attempt to store assets in cache resulted in ' + error)
-			})
+self.addEventListener('install', function(event) {
+	event.waitUntil(
+		caches.open(staticCacheName)
+			.then(cache () {
+				return cache.addAll(urlToCache);
+			}).catch(error() {
+				console.log('error');
+			});
 	);
 });
 
-self.addEventListener('fetch', e => {
-	console.log('Fetch event for ', e.request.url);
-	e.respondWith(
-		caches.match(e.request).then(response => {
-			if (response) {
-				console.log('Found ', e.request.url, ' in cache');
-				return response;
-			}
-			console.log('Network request for ', e.request.url);
-			return fetch(e.request)
-		})
+self.addEventListener('activate', function (event){
+  event.waitUntil(
+    caches.keys().then(function(cacheName){
+      return cacheName.startWith('restaurant-') &&
+        cacheName != staticCacheName;
+    }).map(function(cacheName){
+      return caches.delete(cacheName);
+    });
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+	event.respondWith(
+		caches.match(event.request).then(function (response) {
+				return response || fetch(event.request);
+		});
 	);
 });
